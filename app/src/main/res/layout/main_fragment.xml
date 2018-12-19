@@ -105,5 +105,6 @@
             android:hint="@string/number_of_people" />
 
     </android.support.design.widget.TextInputLayout>
+    <!--todo add go button-->
 
 </android.support.constraint.ConstraintLayout>
