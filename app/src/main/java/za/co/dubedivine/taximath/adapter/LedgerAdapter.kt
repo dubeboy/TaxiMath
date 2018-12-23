@@ -17,7 +17,7 @@ class LedgerAdapter(private val items: ArrayList<Money>) : RecyclerView.Adapter<
         return LViewHolder(view)
     }
 
-    override fun getItemCount(): Int =    items.size
+    override fun getItemCount(): Int = items.size
 
 
     override fun onBindViewHolder(holder: LViewHolder, position: Int) {
