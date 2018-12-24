@@ -1,5 +1,6 @@
 package za.co.dubedivine.taximath.ui.main
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,6 +14,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.main_fragment.*
 import za.co.dubedivine.taximath.R
 import za.co.dubedivine.taximath.adapter.LedgerAdapter
+import za.co.dubedivine.taximath.model.Money
 
 class MainFragment : Fragment() {
 
@@ -36,11 +38,21 @@ class MainFragment : Fragment() {
         // we are using kotlin extensions here so that we dont have to do findviewbyId
 
         //set layoutManager
+        val ledgerAdapter = LedgerAdapter(ArrayList(), context!!)
+
         ledgerRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = LedgerAdapter(ArrayList())
+            adapter = ledgerAdapter
         }
+
+        viewModel.getMony().observe(this, object: Observer<ArrayList<Money>?> {
+            override fun onChanged(list: ArrayList<Money>?) {
+                if (list != null && list.isNotEmpty()) {
+                    ledgerAdapter.add(list.last())
+                }
+            }
+        })
 
         fabCalculate.setOnClickListener {
 
@@ -52,7 +64,6 @@ class MainFragment : Fragment() {
             tv_layout_amount.error = null
             tv_layout_number_of_people.error = null
 
-
             if (pricePersonInTaxiString.isBlank()) {
                 Toast.makeText(context, "Enter price per person", Toast.LENGTH_SHORT).show()
                 tv_layout_taxi_price_per_person.error = "Enter price per person"
@@ -60,18 +71,15 @@ class MainFragment : Fragment() {
             }
 
             if (amountString.isBlank()) {
-
                 Toast.makeText(context, "Enter the amount", Toast.LENGTH_SHORT).show()
                 tv_layout_amount.error = "Enter the amount"
                 return@setOnClickListener
-
             }
             if (numberOfPeopleString.isBlank()) {
                 Toast.makeText(context, "Enter the number of people", Toast.LENGTH_SHORT).show()
                 tv_layout_number_of_people.error = "Number of people"
                 return@setOnClickListener
             }
-
 
             val amount = amountString.toDouble()
             val numberOfPeople = number_of_people.text.toString().toInt()
@@ -91,7 +99,7 @@ class MainFragment : Fragment() {
 
             Log.d(TAG, "the change : $change is given $amount | $numberOfPeople | $pricePersonInTaxi")
 
-
+            viewModel.insert(Money(numberOfPeople, amount, change, priceGivenNumberOfPeople))
         }
 
 

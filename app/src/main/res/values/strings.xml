@@ -5,6 +5,7 @@
     <string name="number_of_people">Number of People</string>
     <!--change for R10 for 2 people | price: R80 -->
     <string name="tv_status_display">Change for R%1$.2f for %2$d people @ R%3$.2f</string>
+    <string name="tv_item_ledger_status_display">Change for R%1$.2f for %2$d people @ R%3$.2f \n<b>Change R%4$.2f</b></string>
     <string name="display_text">R%1$.2f</string>
     <string name="display_text_short">R%1$.2f Short</string>
 </resources>

@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
     init {
         if (!::mony.isInitialized) {
             mony = MutableLiveData()
+            mony.postValue(ArrayList())
         }
     }
 
@@ -27,5 +28,6 @@ class MainViewModel : ViewModel() {
     fun getMony(): LiveData<ArrayList<Money>> {
         return mony
     }
+
 
 }
