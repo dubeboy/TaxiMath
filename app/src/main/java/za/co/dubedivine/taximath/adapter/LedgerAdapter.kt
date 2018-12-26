@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import za.co.dubedivine.taximath.R
 import za.co.dubedivine.taximath.model.Money
@@ -37,6 +39,9 @@ class LedgerAdapter(private val items: ArrayList<Money>, private val context: Co
             val displayText = context.getString(R.string.tv_item_ledger_status_display, amount, numberOfPeople, priceGivenNumberOfPeople, change)
             tv_transaction.text = displayText
 
+
+            val animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+            itemView.startAnimation(animation);
             itemView.setOnClickListener {
 
             }
@@ -45,9 +50,12 @@ class LedgerAdapter(private val items: ArrayList<Money>, private val context: Co
 
     fun add(money: Money) {
         items.add(money)
-        Collections.swap(items, items.lastIndex, 0);
-        notifyDataSetChanged()
-        notifyItemMoved(items.lastIndex, 0)
+        if (items.size == 1) {
+            notifyItemInserted(0)
+        } else {
+            Collections.swap(items, items.lastIndex, 0);
+            notifyItemMoved(items.lastIndex, 0)
+        }
     }
 
 }
