@@ -46,14 +46,6 @@ class MainFragment : Fragment() {
             adapter = ledgerAdapter
         }
 
-        viewModel.getMony().observe(this, object: Observer<ArrayList<Money>?> {
-            override fun onChanged(list: ArrayList<Money>?) {
-                if (list != null && list.isNotEmpty()) {
-                    ledgerAdapter.add(list.last())
-                }
-            }
-        })
-
         fabCalculate.setOnClickListener {
 
             val amountString = et_amount.text.toString()
@@ -99,7 +91,7 @@ class MainFragment : Fragment() {
 
             Log.d(TAG, "the change : $change is given $amount | $numberOfPeople | $pricePersonInTaxi")
 
-            viewModel.insert(Money(numberOfPeople, amount, change, priceGivenNumberOfPeople))
+            ledgerAdapter.add(Money(numberOfPeople, amount, change, priceGivenNumberOfPeople))
         }
 
 
