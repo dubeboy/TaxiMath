@@ -2,6 +2,6 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#bdbdbd</color>
-    <color name="colorAccent">#3d5afe</color>
+    <color name="colorAccent">#26A69A</color>
     <color name="display_tv_background_color">#eee</color>
 </resources>
