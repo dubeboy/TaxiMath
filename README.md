@@ -11,5 +11,5 @@ The app also keeps history of all the change that has been calculated for a trip
 
 # Thanks to:
 
-https://www.appstorescreenshot.com/ allowed me to easily create nice google play screenshots
+https://www.appstorescreenshot.com/ allowed me to easily create aesthetically pleasing google play screenshots
 <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
