@@ -13,21 +13,51 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/et_taxi_price_person"
             android:layout_width="match_parent"
-            android:inputType="numberDecimal"
             android:layout_height="wrap_content"
+            android:hint="@string/enter_taxi_price_per_person"
             android:imeOptions="actionNext"
-            android:nextFocusDown="@id/et_amount"
-            android:hint="@string/enter_taxi_price_per_person" >
+            android:inputType="numberDecimal"
+            android:nextFocusDown="@id/et_amount">
 
-            <requestFocus/>
+            <requestFocus />
         </android.support.design.widget.TextInputEditText>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_layout_taxi_price_per_person"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_layout_taxi_price_per_person" >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_taxi_price_person_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_taxi_price_per_person"
+            android:imeOptions="actionNext"
+            android:inputType="numberDecimal"
+            android:nextFocusDown="@id/et_amount">
+
+            <requestFocus />
+        </android.support.design.widget.TextInputEditText>
+
     </android.support.design.widget.TextInputLayout>
 
 
@@ -47,24 +77,24 @@
             android:id="@+id/tv_status_display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/content_padding"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
             android:gravity="end"
-            android:text="DISPLAY" />
+            android:padding="@dimen/content_padding"
+            android:text="DISPLAY"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_display"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@drawable/rounded_corner2"
             android:layout_margin="10dp"
+            android:background="@drawable/rounded_corner2"
             android:gravity="center_vertical"
-            android:textStyle="bold"
+            android:padding="@dimen/content_padding"
+            android:text="CHANGE"
             android:textColor="@android:color/black"
             android:textSize="15sp"
-            android:padding="@dimen/content_padding"
-            android:text="CHANGE" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -139,6 +169,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_layout_number_of_people"
         app:layout_constraintVertical_bias="0.52" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
 
     <!--todo add go button-->
 
