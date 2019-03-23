@@ -71,6 +71,7 @@ class MainFragment : Fragment() {
         }
 
         val onChangeFocusListener: (View, Boolean) -> Unit = { view: View, hasFocus: Boolean ->
+            // TODO: remove error from view man
             val taxiPricePerson = (view as TextInputEditText).text.toString()
             if (taxiPricePerson.isNotBlank()) {
                 val taxiPricePersonNumber = taxiPricePerson.toDouble()
@@ -95,8 +96,14 @@ class MainFragment : Fragment() {
         val onSwipeListener = { view: View, event: MotionEvent ->
             mDetector.onTouchEvent(event)
         }
+
         et_amount.setOnTouchListener(onSwipeListener)
         tv_layout_amount.setOnTouchListener(onSwipeListener)
+        card_view.setOnTouchListener(onSwipeListener)
+        et_number_of_people.setOnTouchListener(onSwipeListener)
+        tv_layout_number_of_people.setOnTouchListener(onSwipeListener)
+        //TODO: constent naming
+        fabCalculate.setOnTouchListener(onSwipeListener)
 
 
     }
@@ -165,7 +172,6 @@ class MainFragment : Fragment() {
             true
         }
     }
-
 
     private inner class MyGestureListener : GestureDetector.SimpleOnGestureListener() {
 
