@@ -14,6 +14,7 @@ import java.util.*
 
 /*
 * add animation please
+* so when you click on each item it should expand and show transaction history
 * */
 class LedgerAdapter(private val items: ArrayList<Money>, private val context: Context) : RecyclerView.Adapter<LedgerAdapter.LViewHolder>() {
 
@@ -29,14 +30,18 @@ class LedgerAdapter(private val items: ArrayList<Money>, private val context: Co
         holder.bind(items[position])
     }
 
-   inner class LViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+   inner class LViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-       val tv_transaction = view.findViewById<TextView>(R.id.tv_transaction)
+     //  val tv_transaction = view.findViewById<TextView>(R.id.tv_transaction)
+       val tvNumPeopleInSeat = view.findViewById<TextView>(R.id.tv_num_people_in_seat)
+       val tvSeatsPriceOne = view.findViewById<TextView>(R.id.tv_seats_price_1)
+       val tvSeatsPriceTwo = view.findViewById<TextView>(R.id.tv_seats_price_2)
+
 
         fun bind(money: Money) {
             val (numberOfPeople, amount, change, priceGivenNumberOfPeople) = money
             val displayText = context.getString(R.string.tv_item_ledger_status_display, amount, numberOfPeople, priceGivenNumberOfPeople, change)
-            tv_transaction.text = displayText
+          //  tv_transaction.text = displayText
 
 
             val animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);

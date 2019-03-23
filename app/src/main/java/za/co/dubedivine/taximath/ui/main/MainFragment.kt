@@ -1,6 +1,5 @@
 package za.co.dubedivine.taximath.ui.main
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
@@ -16,8 +15,9 @@ import android.widget.EditText
 import android.widget.Toast
 import kotlinx.android.synthetic.main.main_fragment.*
 import za.co.dubedivine.taximath.R
-import za.co.dubedivine.taximath.adapter.LedgerAdapter
-import za.co.dubedivine.taximath.model.Money
+import za.co.dubedivine.taximath.adapter.TaxiRowSeatsAdapter
+import za.co.dubedivine.taximath.model.TaxiRowSeats
+import java.beans.PropertyChangeListener
 
 class MainFragment : Fragment() {
 
@@ -26,7 +26,7 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-//    private lateinit var viewModel: MainViewModel
+    //    private lateinit var viewModel: MainViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.main_fragment, container, false)
@@ -40,40 +40,60 @@ class MainFragment : Fragment() {
         // we are using kotlin extensions here so that we dont have to do findviewbyId
 
         //set layoutManager
-        val ledgerAdapter = LedgerAdapter(ArrayList(), context!!)
+        val taxiRowSeatsAdapter = TaxiRowSeatsAdapter(ArrayList(), ArrayList(), context!!)
 
         ledgerRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = ledgerAdapter
+            adapter = taxiRowSeatsAdapter
         }
 
         fabCalculate.setOnClickListener {
-            calculate(ledgerAdapter)
+            calculate(taxiRowSeatsAdapter)
         }
-
-
+        //Setup next action here
         setViewNextIMEListenerForEditText(et_taxi_price_person, et_amount)
         setViewNextIMEListenerForEditText(et_amount, et_number_of_people)
 
-        // when the user presses the the calculate this will happen
+        // when the user presses the calculate this will happen
         et_number_of_people.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                calculate(ledgerAdapter)
+                calculate(taxiRowSeatsAdapter)
             }
             true
         }
 
+        val onChangeFocusListener: (View, Boolean) -> Unit = { view: View, hasFocus: Boolean ->
+            val taxiPricePerson = (view as TextInputEditText).text.toString()
+            if (taxiPricePerson.isNotBlank()) {
+                val taxiPricePersonNumber = taxiPricePerson.toDouble()
+                if (!hasFocus) {
+                    Log.d(TAG, "The taxi price lost focus bro")
+                    val taxiRowSeatsArrayList = ArrayList<TaxiRowSeats>().apply {
+                        add(TaxiRowSeats(2, taxiPricePersonNumber * 2))
+                        add(TaxiRowSeats(3, taxiPricePersonNumber * 3))
+                        add(TaxiRowSeats(4, taxiPricePersonNumber * 4))
+                    }
+                    when (view.id) {
+                        R.id.et_taxi_price_person -> taxiRowSeatsAdapter.addAll(taxiRowSeatsArrayList, 0)
+                        R.id.et_taxi_price_person_two -> taxiRowSeatsAdapter.addAll(taxiRowSeatsArrayList, 1)
+                    }
+                }
+            }
+            Log.d(TAG, "Has abit of focus bro $hasFocus")
+        }
+        et_taxi_price_person.setOnFocusChangeListener(onChangeFocusListener)
+        et_taxi_price_person_two.setOnFocusChangeListener(onChangeFocusListener)
     }
 
-    private fun calculate(ledgerAdapter: LedgerAdapter) {
+    private fun calculate(taxiRowSeatsAdapter: TaxiRowSeatsAdapter) {
         val amountString = et_amount.text.toString()
         val numberOfPeopleString = et_number_of_people.text.toString()
         val pricePersonInTaxiString = et_taxi_price_person.text.toString()
+//        val pricePersonInTaxiString2 = et_taxi_price_person_2.text.toString()
 
         // todo use kotlin lazy
         clearErrorViewFromEditText(arrayOf(tv_layout_taxi_price_per_person, tv_layout_number_of_people, tv_layout_amount))
-
 
         if (pricePersonInTaxiString.isBlank()) {
             Toast.makeText(context, "Enter the price of the taxi per person", Toast.LENGTH_SHORT).show()
@@ -95,9 +115,6 @@ class MainFragment : Fragment() {
             return
         }
 
-
-
-
         val amount = amountString.toDouble()
         val numberOfPeople = et_number_of_people.text.toString().toInt()
         val pricePersonInTaxi = et_taxi_price_person.text.toString().toDouble()
@@ -111,12 +128,17 @@ class MainFragment : Fragment() {
             tv_display.setTextColor(ContextCompat.getColor(context!!, android.R.color.holo_red_light))
             tv_display.text = getString(R.string.display_text_short, change)
         } else {
+            tv_display.setTextColor(ContextCompat.getColor(context!!, android.R.color.white))
             tv_display.text = getString(R.string.display_text, change)
         }
 
+        // 4 , 3, 2
+
+        // TODO should be done on a text xhage listerner
+
+
         Log.d(TAG, "the change : $change is given $amount | $numberOfPeople | $pricePersonInTaxi")
 
-        ledgerAdapter.add(Money(numberOfPeople, amount, change, priceGivenNumberOfPeople))
     }
 
     private fun clearErrorViewFromEditText(view: Array<TextInputLayout>) {
