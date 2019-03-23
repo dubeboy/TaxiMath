@@ -5,11 +5,10 @@ import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.main_fragment.*
 import za.co.dubedivine.taximath.R
 import za.co.dubedivine.taximath.adapter.TaxiRowSeatsAdapter
 import za.co.dubedivine.taximath.model.TaxiRowSeats
-import java.beans.PropertyChangeListener
+
 
 class MainFragment : Fragment() {
 
@@ -26,10 +25,18 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
+    private lateinit var mDetector: GestureDetectorCompat
+
     //    private lateinit var viewModel: MainViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        val view = inflater.inflate(R.layout.main_fragment, container, false)
+        mDetector = GestureDetectorCompat(activity, MyGestureListener())
+
+        view.setOnTouchListener { _: View, event: MotionEvent ->
+            mDetector.onTouchEvent(event)
+        }
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -84,13 +91,21 @@ class MainFragment : Fragment() {
         }
         et_taxi_price_person.setOnFocusChangeListener(onChangeFocusListener)
         et_taxi_price_person_two.setOnFocusChangeListener(onChangeFocusListener)
+
+        val onSwipeListener = { view: View, event: MotionEvent ->
+            mDetector.onTouchEvent(event)
+        }
+        et_amount.setOnTouchListener(onSwipeListener)
+        tv_layout_amount.setOnTouchListener(onSwipeListener)
+
+
     }
+
 
     private fun calculate(taxiRowSeatsAdapter: TaxiRowSeatsAdapter) {
         val amountString = et_amount.text.toString()
         val numberOfPeopleString = et_number_of_people.text.toString()
         val pricePersonInTaxiString = et_taxi_price_person.text.toString()
-//        val pricePersonInTaxiString2 = et_taxi_price_person_2.text.toString()
 
         // todo use kotlin lazy
         clearErrorViewFromEditText(arrayOf(tv_layout_taxi_price_per_person, tv_layout_number_of_people, tv_layout_amount))
@@ -132,13 +147,7 @@ class MainFragment : Fragment() {
             tv_display.text = getString(R.string.display_text, change)
         }
 
-        // 4 , 3, 2
-
-        // TODO should be done on a text xhage listerner
-
-
         Log.d(TAG, "the change : $change is given $amount | $numberOfPeople | $pricePersonInTaxi")
-
     }
 
     private fun clearErrorViewFromEditText(view: Array<TextInputLayout>) {
@@ -154,6 +163,39 @@ class MainFragment : Fragment() {
                 toEditText.requestFocus()
             }
             true
+        }
+    }
+
+
+    private inner class MyGestureListener : GestureDetector.SimpleOnGestureListener() {
+
+        private val SWIPE_MIN_DISTANCE = 120
+        private val SWIPE_MAX_OFF_PATH = 250
+        private val SWIPE_THRESHOLD_VELOCITY = 200
+
+        override fun onDown(event: MotionEvent): Boolean {
+            Log.d(TAG, "onDown")
+            return false
+        }
+
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            Log.d(TAG, "onFling: ")
+            try {
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false
+                // right to left swipe
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(activity, "Left Swipe", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "onFling left: ")
+                } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(activity, "Right Swipe", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "onFling Right: ")
+                }
+            } catch (e: Exception) {
+                // nothing
+            }
+
+            return false
         }
     }
 
