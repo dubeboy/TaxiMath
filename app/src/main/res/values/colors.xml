@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#bdbdbd</color>
     <color name="colorAccent">#26A69A</color>
     <color name="display_tv_background_color">#eee</color>
+    <color name="colorTaxiOne">#26A69A</color>
+    <color name="colorTaxiTwo">#3498db</color>
+
 </resources>

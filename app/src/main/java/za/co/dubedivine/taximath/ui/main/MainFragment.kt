@@ -9,6 +9,8 @@ import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
@@ -16,6 +18,10 @@ import kotlinx.android.synthetic.main.main_fragment.*
 import za.co.dubedivine.taximath.R
 import za.co.dubedivine.taximath.adapter.TaxiRowSeatsAdapter
 import za.co.dubedivine.taximath.model.TaxiRowSeats
+import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.support.v4.content.res.ResourcesCompat
+import za.co.dubedivine.taximath.util.setBackgroundTint
 
 
 class MainFragment : Fragment() {
@@ -26,6 +32,12 @@ class MainFragment : Fragment() {
     }
 
     private lateinit var mDetector: GestureDetectorCompat
+    private lateinit var scaleDownAnim: Animation
+    private lateinit var scaleUpAnim: Animation
+    private lateinit var drawableTaxiOne: Drawable
+    private lateinit var drawableTaxiTwo: Drawable
+    // by default we calculating for taxi one // used in inner class below
+    private var isOnSwipeCalculatingForTaxiOne: Boolean = true
 
     //    private lateinit var viewModel: MainViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,21 +45,20 @@ class MainFragment : Fragment() {
         val view = inflater.inflate(R.layout.main_fragment, container, false)
         mDetector = GestureDetectorCompat(activity, MyGestureListener())
 
-        view.setOnTouchListener { _: View, event: MotionEvent ->
-            mDetector.onTouchEvent(event)
-        }
+//        view.setOnTouchListener { _: View, event: MotionEvent ->
+//            mDetector.onTouchEvent(event)
+//        }
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-        // get the recycler view first
-        // we are using kotlin extensions here so that we dont have to do findviewbyId
-
-        //set layoutManager
         val taxiRowSeatsAdapter = TaxiRowSeatsAdapter(ArrayList(), ArrayList(), context!!)
+        scaleDownAnim = AnimationUtils.loadAnimation(activity, R.anim.scale_down_animation)
+        scaleUpAnim = AnimationUtils.loadAnimation(activity, R.anim.scale_up_animation)
+
+        drawableTaxiOne = ResourcesCompat.getDrawable(resources, R.drawable.text_view_rounded_corner, null)!!
+        drawableTaxiTwo = ResourcesCompat.getDrawable(resources, R.drawable.text_view_rounded_corner_2, null)!!
 
         ledgerRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -56,8 +67,9 @@ class MainFragment : Fragment() {
         }
 
         fabCalculate.setOnClickListener {
-            calculate(taxiRowSeatsAdapter)
+            calculate()
         }
+
         //Setup next action here
         setViewNextIMEListenerForEditText(et_taxi_price_person, et_amount)
         setViewNextIMEListenerForEditText(et_amount, et_number_of_people)
@@ -65,7 +77,7 @@ class MainFragment : Fragment() {
         // when the user presses the calculate this will happen
         et_number_of_people.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                calculate(taxiRowSeatsAdapter)
+                calculate()
             }
             true
         }
@@ -102,60 +114,88 @@ class MainFragment : Fragment() {
         card_view.setOnTouchListener(onSwipeListener)
         et_number_of_people.setOnTouchListener(onSwipeListener)
         tv_layout_number_of_people.setOnTouchListener(onSwipeListener)
-        //TODO: constent naming
+        tv_taxi_mode.setOnTouchListener(onSwipeListener)
+        //TODO: consistent naming
         fabCalculate.setOnTouchListener(onSwipeListener)
 
-
+        tv_share.setOnClickListener {
+            val intent = Intent(android.content.Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            val shareBodyText = "Your shearing message goes here"
+//            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject/Title")
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText)
+            startActivity(Intent.createChooser(intent, "Choose sharing method"))
+        }
     }
 
-
-    private fun calculate(taxiRowSeatsAdapter: TaxiRowSeatsAdapter) {
-        val amountString = et_amount.text.toString()
+    private fun calculate() {
+        val amountGivenString = et_amount.text.toString()
         val numberOfPeopleString = et_number_of_people.text.toString()
         val pricePersonInTaxiString = et_taxi_price_person.text.toString()
+        val pricePersonInTaxiStringTwo = et_taxi_price_person_two.text.toString()
 
         // todo use kotlin lazy
-        clearErrorViewFromEditText(arrayOf(tv_layout_taxi_price_per_person, tv_layout_number_of_people, tv_layout_amount))
+        // naming convention is bad
+        clearErrorViewFromEditText(arrayOf(tv_layout_taxi_price_per_person,
+                tv_layout_number_of_people,
+                tv_layout_amount, et_taxi_price_2))
 
-        if (pricePersonInTaxiString.isBlank()) {
-            Toast.makeText(context, "Enter the price of the taxi per person", Toast.LENGTH_SHORT).show()
-            tv_layout_taxi_price_per_person.error = "Enter the price of the taxi per person"
-            et_taxi_price_person.requestFocus()
-            return
+        when {
+            isOnSwipeCalculatingForTaxiOne -> {
+                if (pricePersonInTaxiString.isBlank()) {
+                    tv_layout_taxi_price_per_person.error = "REQUIRED: How much does the taxi cost per seat 1."
+                    et_taxi_price_person.requestFocus()
+                    return
+                }
+            } else -> {
+                if (pricePersonInTaxiStringTwo.isBlank()) {
+                    et_taxi_price_2.error = "REQUIRED: How much does the taxi cost per seat 2."
+                    et_taxi_price_person_two.requestFocus()
+                    return
+                }
+            }
         }
 
-        if (amountString.isBlank()) {
-            Toast.makeText(context, "Enter the amount that was given", Toast.LENGTH_SHORT).show()
-            tv_layout_amount.error = "Enter amount given"
+        if (amountGivenString.isBlank()) {
+            tv_layout_amount.error = "REQUIRED: How much money did the passengers give you?"
             et_amount.requestFocus()
             return
         }
         if (numberOfPeopleString.isBlank()) {
-            Toast.makeText(context, "Enter the number of people", Toast.LENGTH_SHORT).show()
-            tv_layout_number_of_people.error = "Number of people"
+//            Toast.makeText(context, "REQUIRED: For how many people is the amount for", Toast.LENGTH_SHORT).show()
+            tv_layout_number_of_people.error = "REQUIRED: For how many people is the amount for"
             et_number_of_people.requestFocus()
             return
         }
 
-        val amount = amountString.toDouble()
+        //TODO make better
+        val amountGiven = amountGivenString.toDouble()
         val numberOfPeople = et_number_of_people.text.toString().toInt()
-        val pricePersonInTaxi = et_taxi_price_person.text.toString().toDouble()
 
-        val priceGivenNumberOfPeople = pricePersonInTaxi * numberOfPeople
-        val change = amount - priceGivenNumberOfPeople
-        //            <!--change for given R10 for 2 people | price-->
+        // taxiFair
+        val taxiPrice = if (isOnSwipeCalculatingForTaxiOne) {
+            et_taxi_price_person.text.toString().toDouble()
+        } else
+            et_taxi_price_person_two.text.toString().toDouble()
 
-        tv_status_display.text = getString(R.string.tv_status_display, amount, numberOfPeople, priceGivenNumberOfPeople)
+        val priceGivenNumberOfPeople = taxiPrice * numberOfPeople
+        val change = amountGiven - priceGivenNumberOfPeople
+
+        tv_status_display.text = getString(R.string.tv_status_display, amountGiven, numberOfPeople, taxiPrice)
+
         if (change < 0) {
             tv_display.setTextColor(ContextCompat.getColor(context!!, android.R.color.holo_red_light))
             tv_display.text = getString(R.string.display_text_short, change)
         } else {
-            tv_display.setTextColor(ContextCompat.getColor(context!!, android.R.color.white))
+            tv_display.setTextColor(ContextCompat.getColor(context!!, android.R.color.black))
             tv_display.text = getString(R.string.display_text, change)
         }
 
-        Log.d(TAG, "the change : $change is given $amount | $numberOfPeople | $pricePersonInTaxi")
+        Log.d(TAG, "the change : $change is given $amountGiven | $numberOfPeople | $taxiPrice")
+
+
     }
+
 
     private fun clearErrorViewFromEditText(view: Array<TextInputLayout>) {
         view.forEach {
@@ -187,21 +227,51 @@ class MainFragment : Fragment() {
         override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
             Log.d(TAG, "onFling: ")
             try {
-                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                if (Math.abs(e1.y - e2.y) > SWIPE_MAX_OFF_PATH)
                     return false
                 // right to left swipe
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Toast.makeText(activity, "Left Swipe", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "onFling left: ")
+                    manipulateViews(false)
+
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Toast.makeText(activity, "Right Swipe", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "onFling Right: ")
+                    manipulateViews(true)
                 }
             } catch (e: Exception) {
                 // nothing
             }
 
             return false
+        }
+
+        private fun manipulateViews(swipeDirection: Boolean) {
+//            // early return when the user does not do the right things
+//            if (swipeDirection == isOnSwipeCalculatingForTaxiOne) {
+//                Toast.makeText(context, "Swipe the other direction to calculate")
+//                return
+//            }
+
+            fabCalculate.startAnimation(scaleDownAnim) // global variable are bad ey
+            tv_taxi_mode.startAnimation(scaleDownAnim)
+            when {
+                swipeDirection -> {
+                    fabCalculate.setBackgroundTint(R.color.colorTaxiTwo)
+                    tv_taxi_mode.setBackgroundDrawable(drawableTaxiTwo)
+                    tv_taxi_mode.text = getString(R.string.taxi_mode, 2)
+                    isOnSwipeCalculatingForTaxiOne = false
+                }
+                else -> {
+                    fabCalculate.setBackgroundTint(R.color.colorTaxiOne)
+                    tv_taxi_mode.setBackgroundDrawable(drawableTaxiOne)
+                    tv_taxi_mode.text = getString(R.string.taxi_mode, 1)
+                    isOnSwipeCalculatingForTaxiOne = true
+                }
+            }
+            fabCalculate.startAnimation(scaleUpAnim)
+            tv_taxi_mode.startAnimation(scaleUpAnim)
         }
     }
 
