@@ -59,16 +59,18 @@ class TaxiRowSeatsAdapter(private val itemsTaxiOne: ArrayList<TaxiRowSeats>,
             itemView.setOnClickListener {}
         }
 
+        // TODO refactor these lines of code please they are very similar
+
         fun bind(rowSeatTaxiOne: TaxiRowSeats) {
             val (numberOfPeople, priceForPeople) = rowSeatTaxiOne
             // val displayText = context.getString(R.string.tv_item_ledger_status_display, amount, numberOfPeople, priceGivenNumberOfPeople, change)
-            tvSeatsPriceOne.text = "R $priceForPeople"
+            tvSeatsPriceOne.text = if(priceForPeople == 0.0) "R --" else "R $priceForPeople"
             bindCommon(numberOfPeople)
         }
 
         fun bindTaxiTwo(taxiRowSeats: TaxiRowSeats) {
             val (numberOfPeople, priceForPeople) = taxiRowSeats
-            tvSeatsPriceTwo.text = "R $priceForPeople"
+            tvSeatsPriceTwo.text = if(priceForPeople == 0.0) "R --" else "R $priceForPeople"
             bindCommon(numberOfPeople)
         }
     }

@@ -7,7 +7,13 @@ Taxi Math Calculator is an easy to use app that helps front seat passengers in S
 The app also keeps history of all the change that has been calculated for a trip so that you the front seat passenger can know how much each back seat passenger gave you to avoid those common nasty arguments with the back passengers who claim to have received the wrong change or worse those who lie about the money they have sent to the front seat
 
 
+# TODO
 
+Add events Firebase events listerner
+try to open twitter when my account is being clicked
+Bottom Sheet with Instructions + language options
+Night mode or not
+Show toast when the user has typed
 
 # Thanks to:
 

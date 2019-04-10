@@ -13,7 +13,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.Toast
 import kotlinx.android.synthetic.main.main_fragment.*
 import za.co.dubedivine.taximath.R
 import za.co.dubedivine.taximath.adapter.TaxiRowSeatsAdapter
@@ -42,13 +41,7 @@ class MainFragment : Fragment() {
     //    private lateinit var viewModel: MainViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.main_fragment, container, false)
-        mDetector = GestureDetectorCompat(activity, MyGestureListener())
-
-//        view.setOnTouchListener { _: View, event: MotionEvent ->
-//            mDetector.onTouchEvent(event)
-//        }
-        return view
+        return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -56,6 +49,7 @@ class MainFragment : Fragment() {
         val taxiRowSeatsAdapter = TaxiRowSeatsAdapter(ArrayList(), ArrayList(), context!!)
         scaleDownAnim = AnimationUtils.loadAnimation(activity, R.anim.scale_down_animation)
         scaleUpAnim = AnimationUtils.loadAnimation(activity, R.anim.scale_up_animation)
+        mDetector = GestureDetectorCompat(activity, MyGestureListener())
 
         drawableTaxiOne = ResourcesCompat.getDrawable(resources, R.drawable.text_view_rounded_corner, null)!!
         drawableTaxiTwo = ResourcesCompat.getDrawable(resources, R.drawable.text_view_rounded_corner_2, null)!!
@@ -72,6 +66,7 @@ class MainFragment : Fragment() {
 
         //Setup next action here
         setViewNextIMEListenerForEditText(et_taxi_price_person, et_amount)
+        setViewNextIMEListenerForEditText(et_taxi_price_person_two, et_amount)
         setViewNextIMEListenerForEditText(et_amount, et_number_of_people)
 
         // when the user presses the calculate this will happen
@@ -82,11 +77,11 @@ class MainFragment : Fragment() {
             true
         }
 
+        // called when the TextInputEditText gains or looses focus
         val onChangeFocusListener: (View, Boolean) -> Unit = { view: View, hasFocus: Boolean ->
             // TODO: remove error from view man
             val taxiPricePerson = (view as TextInputEditText).text.toString()
-            if (taxiPricePerson.isNotBlank()) {
-                val taxiPricePersonNumber = taxiPricePerson.toDouble()
+                val taxiPricePersonNumber = if (taxiPricePerson.isNotBlank()) taxiPricePerson.toDouble() else 0.0
                 if (!hasFocus) {
                     Log.d(TAG, "The taxi price lost focus bro")
                     val taxiRowSeatsArrayList = ArrayList<TaxiRowSeats>().apply {
@@ -99,8 +94,8 @@ class MainFragment : Fragment() {
                         R.id.et_taxi_price_person_two -> taxiRowSeatsAdapter.addAll(taxiRowSeatsArrayList, 1)
                     }
                 }
-            }
-            Log.d(TAG, "Has abit of focus bro $hasFocus")
+
+            Log.d(TAG, "Has a bit of focus bro $hasFocus")
         }
         et_taxi_price_person.setOnFocusChangeListener(onChangeFocusListener)
         et_taxi_price_person_two.setOnFocusChangeListener(onChangeFocusListener)
@@ -115,14 +110,17 @@ class MainFragment : Fragment() {
         et_number_of_people.setOnTouchListener(onSwipeListener)
         tv_layout_number_of_people.setOnTouchListener(onSwipeListener)
         tv_taxi_mode.setOnTouchListener(onSwipeListener)
+        // TODO wrong and causes a crash when the user swipes on trackpad left and right 🙄, smh
+//        ledgerRecyclerView.setOnTouchListener(onSwipeListener)
+
         //TODO: consistent naming
         fabCalculate.setOnTouchListener(onSwipeListener)
 
         tv_share.setOnClickListener {
             val intent = Intent(android.content.Intent.ACTION_SEND)
             intent.type = "text/plain"
-            val shareBodyText = "Please check out this awesome app!, It helps you easily calculate change " +
-                    " when sitting in the front seat of a taxi: Google play:" +
+            val shareBodyText = "Please check out this awesome app!, It helps you easily calculate change," +
+                    " when sitting in the front seat of a taxi, you can cal: Google play:" +
                     "https://play.google.com/store/apps/details?id=za.co.dubedivine.taximath"
 //            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject/Title")
             intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText)
@@ -231,12 +229,13 @@ class MainFragment : Fragment() {
                     return false
                 // right to left swipe
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(activity, "Left Swipe", Toast.LENGTH_SHORT).show()
+                  //  Toast.makeText(activity, "Left Swipe", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "onFling left: ")
                     manipulateViews(false)
 
+
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(activity, "Right Swipe", Toast.LENGTH_SHORT).show()
+                  //  Toast.makeText(activity, "Right Swipe", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "onFling Right: ")
                     manipulateViews(true)
                 }

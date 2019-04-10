@@ -8,8 +8,9 @@
     <string name="tv_item_ledger_status_display">R %1$.2f for %2$d people @ R %3$.2f \n<b>Change R %4$.2f</b></string>
     <string name="display_text">R %1$.2f Change</string>
     <string name="display_text_short">R%1$.2f Short</string>
-    <string name="made_by">Made by @divinedube with ❤ |️️</string>
+    <string name="made_by">Made with ❤ by @divinedube |️️</string>
     <string name="share_app"><u>Share App</u>️ 🙂</string>
     <string name="taxi_mode">Taximath Mode: Taxi Price %1$d</string>
     <string name="taximath_mode_taxi_price_1">Taximath Mode: Taxi Price 1</string>
+    <string name="swipe_instructions">Swipe right/left below to change taxi mode.</string>
 </resources>
