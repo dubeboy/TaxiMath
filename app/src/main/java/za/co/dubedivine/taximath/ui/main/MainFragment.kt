@@ -121,7 +121,9 @@ class MainFragment : Fragment() {
         tv_share.setOnClickListener {
             val intent = Intent(android.content.Intent.ACTION_SEND)
             intent.type = "text/plain"
-            val shareBodyText = "Your shearing message goes here"
+            val shareBodyText = "Please check out this awesome app!, It helps you easily calculate change " +
+                    " when sitting in the front seat of a taxi: Google play:" +
+                    "https://play.google.com/store/apps/details?id=za.co.dubedivine.taximath"
 //            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject/Title")
             intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText)
             startActivity(Intent.createChooser(intent, "Choose sharing method"))
@@ -192,8 +194,6 @@ class MainFragment : Fragment() {
         }
 
         Log.d(TAG, "the change : $change is given $amountGiven | $numberOfPeople | $taxiPrice")
-
-
     }
 
 

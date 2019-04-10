@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "670763477134",
+    "firebase_url": "https://taximath-fcea8.firebaseio.com",
+    "project_id": "taximath-fcea8",
+    "storage_bucket": "taximath-fcea8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670763477134:android:36c0ba0e56c16a41",
+        "android_client_info": {
+          "package_name": "za.co.dubedivine.taximath"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "670763477134-l9m6tha9tjgfvv5peqbrbkv1c7hs777b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwWwbZi1W_gnF_EpfmT4bk30FnOYtK52I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
