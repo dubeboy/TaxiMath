@@ -2,6 +2,7 @@ package za.co.dubedivine.taximath.adapter
 
 import android.content.Context
 import android.support.annotation.IntRange
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -52,11 +53,18 @@ class TaxiRowSeatsAdapter(private val itemsTaxiOne: ArrayList<TaxiRowSeats>,
         private val tvNumPeopleInSeat = view.findViewById<TextView>(R.id.tv_num_people_in_seat)!!
         private val tvSeatsPriceOne = view.findViewById<TextView>(R.id.tv_seats_price_1)!!
         private val tvSeatsPriceTwo = view.findViewById<TextView>(R.id.tv_seats_price_2)!!
+        private val tvPeople= view.findViewById<TextView>(R.id.tv_people)!!
 
         private fun bindCommon(numberOfPeople: Int) {
             tvNumPeopleInSeat.text = numberOfPeople.toString()
+
+            if(numberOfPeople == 15) {
+                tvNumPeopleInSeat.setTextColor(ResourcesCompat.getColor(itemView.context.resources, android.R.color.holo_red_dark, null))
+                tvPeople.setTextColor(ResourcesCompat.getColor(itemView.context.resources, android.R.color.holo_red_dark, null))
+            }
             itemView.startAnimation(animation)
-            itemView.setOnClickListener {}
+            itemView.setOnClickListener {} // click listener
+
         }
 
         // TODO refactor these lines of code please they are very similar

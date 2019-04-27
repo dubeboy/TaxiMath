@@ -88,6 +88,7 @@ class MainFragment : Fragment() {
                         add(TaxiRowSeats(2, taxiPricePersonNumber * 2))
                         add(TaxiRowSeats(3, taxiPricePersonNumber * 3))
                         add(TaxiRowSeats(4, taxiPricePersonNumber * 4))
+                        add(TaxiRowSeats(15, taxiPricePersonNumber * 15))
                     }
                     when (view.id) {
                         R.id.et_taxi_price_person -> taxiRowSeatsAdapter.addAll(taxiRowSeatsArrayList, 0)

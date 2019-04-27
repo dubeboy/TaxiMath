@@ -1,16 +1,22 @@
 <resources>
     <string name="app_name">TaxiMath</string>
-    <string name="enter_taxi_price_per_person">Enter Taxi Price Per Person</string>
-    <string name="enter_taxi_price_per_person_2">Enter Taxi Price Per Person 2</string>
+    <string name="enter_taxi_price_per_person">Taxi Price Per Person.Trip 1</string>
+    <string name="enter_taxi_price_per_person_2">Taxi Price Per Person.Trip 2</string>
     <string name="amount">Money Given</string>
-    <string name="number_of_people">Number of People</string>
-    <string name="tv_status_display">Change for R %1$.2f for %2$d people|@ R %3$.2f per person</string>
-    <string name="tv_item_ledger_status_display">R %1$.2f for %2$d people @ R %3$.2f \n<b>Change R %4$.2f</b></string>
+    <string name="number_of_people">Number Of People</string>
+    <string name="tv_status_display">Change For R %1$.2f For %2$d People @ R %3$.2f Per Person</string>
+    <string name="tv_item_ledger_status_display">R %1$.2f For %2$d People @ R %3$.2f \n<b>Change R %4$.2f</b></string>
     <string name="display_text">R %1$.2f Change</string>
     <string name="display_text_short">R%1$.2f Short</string>
     <string name="made_by">Made with ❤ by @divinedube |️️</string>
     <string name="share_app"><u>Share App</u>️ 🙂</string>
-    <string name="taxi_mode">Taximath Mode: Taxi Price %1$d</string>
-    <string name="taximath_mode_taxi_price_1">Taximath Mode: Taxi Price 1</string>
-    <string name="swipe_instructions">Swipe right/left below to change taxi mode.</string>
+
+    <!--Could also add at below the price we dealing with-->
+    <string name="taxi_mode">Taximath Mode: Trip %1$d</string>
+    <string name="taximath_mode_taxi_price_1">Taximath Mode: Trip 1</string>
+    <string name="swipe_instructions">Swipe Right/Left Below to Change Taximath Mode.</string>
+    <string name="total">Total</string>
+    <string name="taxi_trip_two">TAXI TRIP 2</string>
+    <string name="people">PEOPLE</string>
+    <string name="taxi_trip_one">TAXI TRIP 1</string>
 </resources>
