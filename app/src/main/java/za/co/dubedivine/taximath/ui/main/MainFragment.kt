@@ -19,7 +19,11 @@ import za.co.dubedivine.taximath.adapter.TaxiRowSeatsAdapter
 import za.co.dubedivine.taximath.model.TaxiRowSeats
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.support.v4.content.res.ResourcesCompat
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
+import android.widget.Toast
 import za.co.dubedivine.taximath.util.setBackgroundTint
 
 
@@ -120,12 +124,30 @@ class MainFragment : Fragment() {
         tv_share.setOnClickListener {
             val intent = Intent(android.content.Intent.ACTION_SEND)
             intent.type = "text/plain"
-            val shareBodyText = "Please check out this awesome app!, It helps you easily calculate change," +
-                    " when sitting in the front seat of a taxi, you can cal: Google play:" +
+            val shareBodyText = "Please check out this awesome app!, It helps you to easily calculate change," +
+                    " when sitting in the front seat of a taxi and it looks nice 😉.\n\n " +
+                    "Click the link below to find out more and download app from the Google play: \n" +
                     "https://play.google.com/store/apps/details?id=za.co.dubedivine.taximath"
 //            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject/Title")
             intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText)
             startActivity(Intent.createChooser(intent, "Choose sharing method"))
+        }
+
+        val madeBy = getString(R.string.made_by)
+        val spannableString = SpannableString(madeBy)
+        spannableString.setSpan(UnderlineSpan(), madeBy.indexOf('@') + 1, madeBy.length - 4, 0)
+        tv_made_by.text = spannableString
+
+        tv_made_by.setOnClickListener {
+            try {
+                this.activity?.packageManager?.getPackageInfo("com.twitter.android", 0)
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=423458669"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                this.startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(activity, "Sorry could not open @divinedube`s profile because you " +
+                        "do not have the Twitter app on your phone.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

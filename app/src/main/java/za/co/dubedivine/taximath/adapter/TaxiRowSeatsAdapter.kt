@@ -83,7 +83,7 @@ class TaxiRowSeatsAdapter(private val itemsTaxiOne: ArrayList<TaxiRowSeats>,
         }
     }
 
-    // could make the taxiIndex to boolean but chose to make it int for readabity
+    // could make the taxiIndex to boolean but chose to make it int for readability and brevity
     fun addAll(taxiRowSeats: ArrayList<TaxiRowSeats>, @IntRange(from = 0L, to = 1L) taxiIndex: Int) {
         when(taxiIndex) {
             0 -> {
@@ -97,4 +97,7 @@ class TaxiRowSeatsAdapter(private val itemsTaxiOne: ArrayList<TaxiRowSeats>,
         }
         notifyDataSetChanged()
     }
+
+    //TODO should be function that changes the heading of the item view to reflect the taxi mode
 }
+
